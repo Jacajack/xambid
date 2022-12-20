@@ -3,10 +3,10 @@
 
 x11_context::x11_context()
 {
-	m_screen = 0;
 	m_display = XOpenDisplay(NULL);
 	assert(m_display != NULL);
 	
+	m_screen = DefaultScreen(m_display);
 	m_window = RootWindow(m_display, m_screen);
 }
 

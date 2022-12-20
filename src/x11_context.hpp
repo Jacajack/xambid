@@ -17,7 +17,9 @@ public:
 	XColor query_color(XColor c) const;
 	XWindowAttributes get_window_attribs() const;
 	int get_window_width() const {return get_window_attribs().width;}
-	int get_window_height() const {return get_window_attribs().height;};
+	int get_window_height() const {return get_window_attribs().height;}
+	int get_display_width() const {return DisplayWidth(m_display, m_screen);}
+	int get_display_height() const {return DisplayHeight(m_display, m_screen);}
 
 private:
 	Display *m_display;
