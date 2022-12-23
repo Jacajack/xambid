@@ -1,6 +1,6 @@
 add_executable(xambid
-	"${CMAKE_CURRENT_SOURCE_DIR}/xambid.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/socket.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/xambid.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/socket.cpp"
 )
 
 target_link_libraries(xambid PRIVATE xambi)
