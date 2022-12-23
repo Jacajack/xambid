@@ -11,6 +11,8 @@
 #include <xambi/screen_rect.hpp>
 #include <xambi/naive_screen_sampler.hpp>
 #include <xambi/random_screen_sampler.hpp>
+#include <xambi/averaging_color_aggregate.hpp>
+#include <xambi/color_mode_aggregate.hpp>
 #include <xambi/rgb_color.hpp>
 #include "socket.hpp"
 
@@ -30,9 +32,11 @@ int main(int argc, char *argv[])
 	std::mt19937 rng{std::random_device{}()};
 
 	xambi::x11_context xctx;
-	xambi::capture_x11_shm capture{xctx};
+	xambi::capture_x11_nvfbc capture{xctx};
 	xambi::screen_rect rect{0, 0, 2560, 1440};
 	xambi::random_screen_sampler sampler{capture, rect, rng, 0.1f};
+	xambi::color_mode_aggregate<6, 6, 6> aggregate;
+	// xambi::averaging_color_aggregate aggregate;
 
 	unix_socket_server serv("./funny_socket");
 	
@@ -42,20 +46,12 @@ int main(int argc, char *argv[])
 		capture.do_capture();
 
 		auto pixels = sampler.sample();
-		float r{}, g{}, b{};
-		int cnt = 0;
-		for (const auto &p : pixels)
-		{
-			r += p.r / 255.f;
-			g += p.g / 255.f;
-			b += p.b / 255.f;
-			cnt++;
-		}
+		auto color = aggregate.process(pixels.data(), pixels.size());
 
-		r /= cnt;
-		g /= cnt;
-		b /= cnt;
-		
+		float r = color.r / 255.f;
+		float g = color.g / 255.f;
+		float b = color.b / 255.f;
+
 		std::ostringstream ss; 
 		ss << r << " " << g << " " << b << std::endl;
 

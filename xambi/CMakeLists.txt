@@ -7,6 +7,7 @@ add_library(xambi SHARED
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/capture_x11_nvfbc.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/screen_sampler.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/naive_screen_sampler.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/averaging_color_aggregate.cpp"
 )
 
 target_include_directories(xambi PUBLIC
