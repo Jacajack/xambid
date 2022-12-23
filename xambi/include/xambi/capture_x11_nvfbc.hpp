@@ -2,7 +2,7 @@
 #include "capture_api.hpp"
 #include "utils.hpp"
 #include "x11_context.hpp"
-#include <NvFBC.h>
+#include "nv/NvFBC.h"
 #include <vector>
 
 class capture_x11_nvfbc : public capture_api, public no_copy, public no_move

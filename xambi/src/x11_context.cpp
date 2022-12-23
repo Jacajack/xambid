@@ -1,4 +1,4 @@
-#include "x11_context.hpp"
+#include <xambi/x11_context.hpp>
 #include <cassert>
 
 x11_context::x11_context()

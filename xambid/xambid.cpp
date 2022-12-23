@@ -3,11 +3,11 @@
 #include <sstream>
 #include <thread>
 #include <signal.h>
-#include "capture_x11_nvfbc.hpp"
-#include "x11_context.hpp"
+#include <xambi/x11_context.hpp>
+#include <xambi/capture_x11.hpp>
+#include <xambi/capture_x11_shm.hpp>
+#include <xambi/capture_x11_nvfbc.hpp>
 #include "socket.hpp"
-// #include "capture_x11.hpp"
-// #include "capture_x11_shm.hpp"
 
 volatile bool alive = true;
 
@@ -33,8 +33,23 @@ int main(int argc, char *argv[])
 
 		capture.do_capture();
 		
-		float r, g, b;
-		capture.get_pixel(2560/2, 1440/2, r, g, b);
+
+		float r{}, g{}, b{};
+		int cnt = 0;
+		for (int y = 1200; y < 1440; y++)
+			for (int x = 0; x < 2560; x++)
+			{
+				float pr, pg, pb;
+				capture.get_pixel(x, y, pr, pg, pb);
+				r += pr;
+				g += pg;
+				b += pb;
+				cnt++;
+			}
+
+		r /= cnt;
+		g /= cnt;
+		b /= cnt;
 		
 		std::ostringstream ss; 
 		ss << r << " " << g << " " << b << std::endl;

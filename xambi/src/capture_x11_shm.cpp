@@ -1,4 +1,4 @@
-#include "capture_x11_shm.hpp"
+#include <xambi/capture_x11_shm.hpp>
 #include <cassert>
 #include <stdexcept>
 #include <sys/shm.h>

@@ -1,5 +1,5 @@
-#include "capture_x11.hpp"
-#include "x11_context.hpp"
+#include <xambi/capture_x11.hpp>
+#include <xambi/x11_context.hpp>
 #include <cassert>
 
 capture_x11::capture_x11(x11_context &xctx) :

@@ -1,8 +1,7 @@
-#include "capture_x11_nvfbc.hpp"
+#include <xambi/capture_x11_nvfbc.hpp>
+#include <xambi/nv/NvFBC.h>
 #include <cassert>
 #include <dlfcn.h>
-#include <NvFBC.h>
-//#include <NvFBCUtils.h>
 
 #define APP_VERSION 3
 #define LIB_NVFBC_NAME "libnvidia-fbc.so.1"
