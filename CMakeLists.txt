@@ -10,6 +10,7 @@ add_executable(xambid
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/capture_x11.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/capture_x11_shm.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/capture_x11_nvfbc.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/socket.cpp"
 )
 
 target_include_directories(xambid PRIVATE
