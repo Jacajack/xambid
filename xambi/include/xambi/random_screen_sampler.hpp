@@ -35,8 +35,8 @@ std::vector<xambi::rgb_color> random_screen_sampler<RNG>::sample() const
 	std::vector<rgb_color> pixels;
 	pixels.reserve(samples);
 
-	std::uniform_int_distribution<int> xdist(m_rect.x, m_rect.x + m_rect.w);
-	std::uniform_int_distribution<int> ydist(m_rect.y, m_rect.y + m_rect.h);
+	std::uniform_int_distribution<int> xdist(m_rect.x, m_rect.x + m_rect.w - 1);
+	std::uniform_int_distribution<int> ydist(m_rect.y, m_rect.y + m_rect.h - 1);
 
 	for (int i = 0; i < samples; i++)
 	{
