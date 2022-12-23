@@ -26,8 +26,6 @@ capture_x11_shm::capture_x11_shm(x11_context &xctx) :
 		m_height
 	)};
 	
-	assert(m_image != nullptr);
-	
 	m_shminfo.shmid = shmget(
 		IPC_PRIVATE,
 		m_image->bytes_per_line * m_image->height,
@@ -58,10 +56,9 @@ void capture_x11_shm::do_capture()
 		AllPlanes);
 }
 
-void capture_x11_shm::get_pixel(int x, int y, float &r, float &g, float &b)
+void capture_x11_shm::get_pixel_rect(rgb_color *dest, int x0, int y0, int w, int h)
 {
-	auto pixel = m_image.get_pixel(x, y);
-	r = pixel.r / 255.f;
-	g = pixel.g / 255.f;
-	b = pixel.b / 255.f;
+	for (int y = y0; y < y0 + h; y++)
+		for (int x = x0; x < x0 + w; x++)
+			*dest++ = m_image.get_pixel(x, y);
 }

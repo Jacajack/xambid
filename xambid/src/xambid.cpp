@@ -8,6 +8,7 @@
 #include <xambi/capture_x11_shm.hpp>
 #include <xambi/capture_x11_nvfbc.hpp>
 #include "socket.hpp"
+#include "xambi/rgb_color.hpp"
 
 volatile bool alive = true;
 
@@ -33,19 +34,20 @@ int main(int argc, char *argv[])
 
 		capture.do_capture();
 		
+		int w = 2560;
+		int h = 1440;
+		std::vector<xambi::rgb_color> pixels(w * h);
+		capture.get_pixel_rect(pixels.data(), 0, 0, w, h);
 
 		float r{}, g{}, b{};
 		int cnt = 0;
-		for (int y = 1200; y < 1440; y++)
-			for (int x = 0; x < 2560; x++)
-			{
-				float pr, pg, pb;
-				capture.get_pixel(x, y, pr, pg, pb);
-				r += pr;
-				g += pg;
-				b += pb;
-				cnt++;
-			}
+		for (const auto &p : pixels)
+		{
+			r += p.r / 255.f;
+			g += p.g / 255.f;
+			b += p.b / 255.f;
+			cnt++;
+		}
 
 		r /= cnt;
 		g /= cnt;

@@ -97,14 +97,20 @@ void capture_x11_nvfbc::do_capture()
 	assert(status == NVFBC_SUCCESS);
 }
 
-void capture_x11_nvfbc::get_pixel(int x, int y, float &r, float &g, float &b)
+void capture_x11_nvfbc::get_pixel_rect(rgb_color *dest, int x0, int y0, int w, int h)
 {
-	assert(x >= 0 && x < get_width());
-	assert(y >= 0 && y < get_height());
+	assert(x0 >= 0 && x0 + w <= get_width());
+	assert(y0 >= 0 && y0 + h <= get_height());
 	assert(m_buffer != nullptr);
 	
-	uint8_t *pixel = &m_buffer[3 * (x + y * get_width())];
-	r = pixel[0] / 255.f;
-	g = pixel[1] / 255.f;
-	b = pixel[2] / 255.f;
+	for (int y = y0; y < y0 + h; y++)
+		for (int x = x0; x < x0 + w; x++)
+		{
+			uint8_t *data = &m_buffer[3 * (x + y * get_width())];
+			rgb_color color;
+			color.r = data[0];
+			color.g = data[1];
+			color.b = data[2];
+			*dest++ = color;
+		}
 }
