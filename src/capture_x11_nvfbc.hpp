@@ -22,4 +22,6 @@ private:
 	NVFBC_API_FUNCTION_LIST m_nvfbc;
 	NVFBC_SESSION_HANDLE m_fbc_handle;
 	uint8_t *m_buffer;
+	int m_width;
+	int m_height;
 };

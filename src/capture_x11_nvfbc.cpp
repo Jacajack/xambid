@@ -10,7 +10,9 @@
 capture_x11_nvfbc::capture_x11_nvfbc(x11_context &xctx) :
 	m_xctx(&xctx),
 	m_lib_nvfbc(nullptr),
-	m_buffer(nullptr)
+	m_buffer(nullptr),
+	m_width(m_xctx->get_display_width()),
+	m_height(m_xctx->get_display_height())
 {
 	m_lib_nvfbc = dlopen(LIB_NVFBC_NAME, RTLD_NOW);
 	assert(m_lib_nvfbc != nullptr);
@@ -82,12 +84,12 @@ capture_x11_nvfbc::~capture_x11_nvfbc()
 
 int capture_x11_nvfbc::get_width() const
 {
-	return m_xctx->get_window_width();
+	return m_width;
 }
 
 int capture_x11_nvfbc::get_height() const
 {
-	return m_xctx->get_window_height();
+	return m_height;
 }
 
 void capture_x11_nvfbc::do_capture()
