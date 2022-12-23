@@ -5,6 +5,8 @@
 #include "nv/NvFBC.h"
 #include <vector>
 
+namespace xambi {
+
 class capture_x11_nvfbc : public capture_api, public no_copy, public no_move
 {
 public:
@@ -25,3 +27,5 @@ private:
 	int m_width;
 	int m_height;
 };
+
+}

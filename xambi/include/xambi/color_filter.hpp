@@ -1,6 +1,8 @@
 #pragma once
 #include "rgb_color.hpp"
 
+namespace xambi {
+
 class color_filter
 {
 public:
@@ -20,3 +22,5 @@ public:
 private:
 	rgb_color m_color;
 };
+
+}

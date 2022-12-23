@@ -1,6 +1,8 @@
 #include <xambi/x11_context.hpp>
 #include <cassert>
 
+using xambi::x11_context;
+
 x11_context::x11_context()
 {
 	m_display = XOpenDisplay(NULL);

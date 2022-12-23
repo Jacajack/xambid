@@ -5,6 +5,8 @@
 #include "x11_context.hpp"
 #include "x11_image.hpp"
 
+namespace xambi {
+
 class capture_x11 : public capture_api, public no_copy, public no_move
 {
 public:
@@ -21,3 +23,5 @@ private:
 	int m_width;
 	int m_height;
 };
+
+}

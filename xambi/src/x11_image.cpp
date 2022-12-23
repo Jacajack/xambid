@@ -4,6 +4,8 @@
 #include <utility>
 #include <cassert>
 
+using xambi::x11_image;
+
 x11_image::x11_image(x11_context &xctx, XImage *img) :
 	m_xctx(&xctx),
 	m_img(img)
@@ -30,7 +32,7 @@ x11_image::~x11_image()
 		XDestroyImage(m_img);
 }
 
-rgb_color x11_image::get_pixel(int x, int y) const
+xambi::rgb_color x11_image::get_pixel(int x, int y) const
 {
 	assert(m_img != nullptr);
 	assert(m_xctx != nullptr);

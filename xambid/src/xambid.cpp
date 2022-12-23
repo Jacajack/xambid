@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
 	
 	signal(SIGINT, sigint_handler);
 	
-	x11_context xctx;
-	capture_x11_nvfbc capture{xctx};
+	xambi::x11_context xctx;
+	xambi::capture_x11_shm capture{xctx};
 
 	unix_socket_server serv("./funny_socket");
 	

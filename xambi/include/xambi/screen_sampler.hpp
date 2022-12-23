@@ -1,6 +1,8 @@
 #pragma once
 #include "screen_zone.hpp"
 
+namespace xambi {
+
 class capture_api;
 
 class screen_zone_sampler
@@ -26,3 +28,4 @@ class naive_screen_sampler : public screen_zone_sampler
 
 };
 
+}

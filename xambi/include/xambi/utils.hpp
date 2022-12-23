@@ -1,5 +1,7 @@
 #pragma once
 
+namespace xambi {
+
 struct no_copy
 {
 	no_copy() = default;
@@ -19,3 +21,5 @@ struct no_move
 	no_move &operator=(no_move &&) = delete;
 	~no_move() = default;
 };
+
+}

@@ -2,6 +2,8 @@
 #include <xambi/x11_context.hpp>
 #include <cassert>
 
+using xambi::capture_x11;
+
 capture_x11::capture_x11(x11_context &xctx) :
 	m_xctx(&xctx),
 	m_image(),

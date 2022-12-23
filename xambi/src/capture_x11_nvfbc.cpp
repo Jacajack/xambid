@@ -6,6 +6,8 @@
 #define APP_VERSION 3
 #define LIB_NVFBC_NAME "libnvidia-fbc.so.1"
 
+using xambi::capture_x11_nvfbc;
+
 capture_x11_nvfbc::capture_x11_nvfbc(x11_context &xctx) :
 	m_xctx(&xctx),
 	m_lib_nvfbc(nullptr),

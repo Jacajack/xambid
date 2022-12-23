@@ -3,6 +3,8 @@
 #include "xambi/x11_context.hpp"
 #include <X11/Xlib.h>
 
+namespace xambi {
+
 class x11_context;
 
 class x11_image
@@ -29,3 +31,5 @@ private:
 	x11_context *m_xctx = nullptr;
 	XImage *m_img = nullptr;
 };
+
+}

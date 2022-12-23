@@ -11,7 +11,7 @@ public:
 	virtual ~socket_server() = default;
 };
 
-class unix_socket_server_connection : public no_copy
+class unix_socket_server_connection : public xambi::no_copy
 {
 public:
 	unix_socket_server_connection(int socket, int client);
@@ -32,7 +32,7 @@ private:
 	std::vector<char> m_buffer;
 };
 
-class unix_socket_server : public socket_server, public no_copy, public no_move
+class unix_socket_server : public socket_server, public xambi::no_copy, public xambi::no_move
 {
 public:
 	unix_socket_server(const std::filesystem::path &path, int max_conns = 64);

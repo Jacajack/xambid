@@ -4,7 +4,9 @@
 #include <sys/shm.h>
 #include <X11/Xutil.h>
 #define FULLPTR ((void*)-1)
- 
+
+using xambi::capture_x11_shm;
+
 capture_x11_shm::capture_x11_shm(x11_context &xctx) :
 	m_xctx(&xctx),
 	m_width(m_xctx->get_window_width()),

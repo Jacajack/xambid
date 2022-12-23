@@ -1,5 +1,7 @@
 #pragma once
 
+namespace xambi {
+
 struct screen_zone
 {
 	float x_min;
@@ -7,3 +9,5 @@ struct screen_zone
 	float y_min;
 	float y_max;
 };
+
+}

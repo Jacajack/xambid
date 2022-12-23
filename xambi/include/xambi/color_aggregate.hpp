@@ -1,6 +1,8 @@
 #pragma once
 #include "rgb_color.hpp"
 
+namespace xambi {
+
 class color_aggregate
 {
 public:
@@ -17,3 +19,5 @@ class averaging_color_aggregate : public color_aggregate
 class color_mode_aggregate : public color_aggregate
 {
 };
+
+}

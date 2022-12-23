@@ -2,6 +2,8 @@
 #include "utils.hpp"
 #include <X11/Xlib.h>
 
+namespace xambi {
+
 class x11_context : public no_copy, public no_move
 {
 public:
@@ -26,3 +28,5 @@ private:
 	Window m_window;
 	int m_screen;
 };
+
+}

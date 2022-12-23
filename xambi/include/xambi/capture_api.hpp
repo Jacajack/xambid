@@ -1,5 +1,7 @@
 #pragma once
 
+namespace xambi {
+
 class capture_api
 {
 public:
@@ -10,3 +12,5 @@ public:
 	virtual void do_capture() = 0;
 	virtual void get_pixel(int x, int y, float &r, float &g, float &b) = 0;
 };
+
+}
