@@ -1,8 +1,10 @@
 #pragma once
+#include <X11/Xlib.h>
+#include <X11/extensions/XShm.h>
 #include "capture_api.hpp"
 #include "utils.hpp"
 #include "x11_context.hpp"
-#include <X11/extensions/XShm.h>
+#include "x11_image.hpp"
 
 class capture_x11_shm : public capture_api, public no_copy, public no_move
 {
@@ -17,7 +19,7 @@ public:
 
 private:
 	x11_context *m_xctx;
-	XImage *m_image;
+	x11_image m_image;
 	XShmSegmentInfo m_shminfo;
 	int m_width;
 	int m_height;

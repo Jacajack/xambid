@@ -4,21 +4,15 @@
 
 capture_x11::capture_x11(x11_context &xctx) :
 	m_xctx(&xctx),
-	m_image(nullptr),
+	m_image(),
 	m_width(m_xctx->get_display_width()),
 	m_height(m_xctx->get_display_height())
 {
 }
 
-capture_x11::~capture_x11()
-{
-	free_image();
-}
-
 void capture_x11::do_capture()
 {
-	free_image();
-	m_image = XGetImage(
+	m_image = x11_image{*m_xctx, XGetImage(
 		m_xctx->get_display(),
 		m_xctx->get_window(),
 		0,
@@ -26,23 +20,14 @@ void capture_x11::do_capture()
 		m_xctx->get_window_width(),
 		m_xctx->get_window_height(),
 		AllPlanes,
-		ZPixmap);
+		ZPixmap
+	)};
 }
 
 void capture_x11::get_pixel(int x, int y, float &r, float &g, float &b)
 {
-	assert(m_image != nullptr);
-	
-	XColor color;
-	color.pixel = XGetPixel(m_image, x, y);
-	color = m_xctx->query_color(color);
-	r = color.red / 65535.f;
-	g = color.green / 65535.f;
-	b = color.blue / 65535.f;
-}
-
-void capture_x11::free_image()
-{
-	if (!m_image) return;
-	XDestroyImage(m_image);
+	auto pixel = m_image.get_pixel(x, y);
+	r = pixel.r / 255.f;
+	g = pixel.g / 255.f;
+	b = pixel.b / 255.f;
 }
