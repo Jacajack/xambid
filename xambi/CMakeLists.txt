@@ -10,6 +10,10 @@ target_include_directories(xambi PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
+target_compile_definitions(xambi PRIVATE
+	"XAMBI_FAST_X11_IMAGE_GETPIXEL"
+)
+
 target_link_libraries(xambi PUBLIC
 	X11::X11
 	X11::Xutil

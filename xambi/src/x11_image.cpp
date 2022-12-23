@@ -35,6 +35,14 @@ rgb_color x11_image::get_pixel(int x, int y) const
 	assert(m_img != nullptr);
 	assert(m_xctx != nullptr);
 
+#ifdef XAMBI_FAST_X11_IMAGE_GETPIXEL
+	rgb_color color;
+	uint32_t pixel = XGetPixel(m_img, x, y);
+	color.r = (pixel & 0x000000ff) >> 0;
+	color.g = (pixel & 0x0000ff00) >> 8;
+	color.b = (pixel & 0x00ff0000) >> 16;
+	return color;
+#else
 	XColor xcolor;
 	xcolor.pixel = XGetPixel(m_img, x, y);
 	xcolor = m_xctx->query_color(xcolor);
@@ -44,4 +52,5 @@ rgb_color x11_image::get_pixel(int x, int y) const
 	color.g = xcolor.green / 256;
 	color.b = xcolor.blue / 256;
 	return color;
+#endif
 }
