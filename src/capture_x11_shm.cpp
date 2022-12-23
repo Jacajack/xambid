@@ -6,7 +6,9 @@
 #define FULLPTR ((void*)-1)
  
 capture_x11_shm::capture_x11_shm(x11_context &xctx) :
-	m_xctx(&xctx)
+	m_xctx(&xctx),
+	m_width(m_xctx->get_window_width()),
+	m_height(m_xctx->get_window_height())
 {
 	if (!XShmQueryExtension(m_xctx->get_display()))
 		throw std::runtime_error{"X11 Shm extension not supported"};
@@ -18,8 +20,8 @@ capture_x11_shm::capture_x11_shm(x11_context &xctx) :
 		ZPixmap,
 		nullptr,
 		&m_shminfo,
-		m_xctx->get_window_width(),
-		m_xctx->get_window_height()
+		m_width,
+		m_height
 	);
 	
 	assert(m_image != nullptr);
@@ -44,18 +46,6 @@ capture_x11_shm::~capture_x11_shm()
 	shmctl(m_shminfo.shmid, IPC_RMID, 0);
 }
  
- 
-int capture_x11_shm::get_width() const
-{
-	return m_xctx->get_window_width();
-}
-
-int capture_x11_shm::get_height() const
-{
-	return m_xctx->get_window_height();
-}
-
-
 void capture_x11_shm::do_capture()
 {
 	XShmGetImage(

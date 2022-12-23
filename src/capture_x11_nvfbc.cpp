@@ -82,16 +82,6 @@ capture_x11_nvfbc::~capture_x11_nvfbc()
 	dlclose(m_lib_nvfbc);
 }
 
-int capture_x11_nvfbc::get_width() const
-{
-	return m_width;
-}
-
-int capture_x11_nvfbc::get_height() const
-{
-	return m_height;
-}
-
 void capture_x11_nvfbc::do_capture()
 {
 	NVFBC_FRAME_GRAB_INFO grab_info{};

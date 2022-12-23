@@ -4,23 +4,15 @@
 
 capture_x11::capture_x11(x11_context &xctx) :
 	m_xctx(&xctx),
-	m_image(nullptr)
+	m_image(nullptr),
+	m_width(m_xctx->get_display_width()),
+	m_height(m_xctx->get_display_height())
 {
 }
 
 capture_x11::~capture_x11()
 {
 	free_image();
-}
-
-int capture_x11::get_width() const
-{
-	return m_xctx->get_window_width();
-}
-
-int capture_x11::get_height() const
-{
-	return m_xctx->get_window_height();
 }
 
 void capture_x11::do_capture()
