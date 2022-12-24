@@ -1,11 +1,16 @@
 #pragma once
 #include <algorithm>
 #include <cmath>
+#include <cassert>
 
 namespace xambi {
 
 inline void rgb_to_hsv(float r, float g, float b, float &h, float &s, float &v)
 {
+	assert(r >= 0 && r <= 1);
+	assert(g >= 0 && g <= 1);
+	assert(b >= 0 && b <= 1);
+
 	const float xmax = std::max({r, g, b});
 	const float xmin = std::min({r, g, b});
 	const float c = xmax - xmin;
@@ -29,11 +34,23 @@ inline void rgb_to_hsv(float r, float g, float b, float &h, float &s, float &v)
 		h = 60.f / 360.f * (4.f + (r - g) / c);
 	}
 
+	if (h < 0)
+		h = 1.f + h;
+
+	h = std::fmod(h, 1.f);
 	s = v == 0 ? 0 : c / v;
+
+	assert(h >= 0 && h <= 1);
+	assert(s >= 0 && s <= 1);
+	assert(v >= 0 && v <= 1);
 }
 
 inline void hsv_to_rgb(float h, float s, float v, float &r, float &g, float &b)
 {
+	assert(h >= 0 && h <= 1);
+	assert(s >= 0 && s <= 1);
+	assert(v >= 0 && v <= 1);
+
 	const float c = v * s;
 	const float hp = h * 6.f;
 	const float x = c * (1.f - std::abs(std::fmod(hp, 2.f) - 1));
@@ -75,6 +92,10 @@ inline void hsv_to_rgb(float h, float s, float v, float &r, float &g, float &b)
 		g = 0 + m;
 		b = x + m;
 	}
+
+	assert(r >= 0 && r <= 1);
+	assert(g >= 0 && g <= 1);
+	assert(b >= 0 && b <= 1);
 }
 
 }
