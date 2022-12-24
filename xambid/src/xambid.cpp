@@ -13,6 +13,7 @@
 #include <xambi/naive_screen_sampler.hpp>
 #include <xambi/random_screen_sampler.hpp>
 #include <xambi/averaging_color_aggregate.hpp>
+#include <xambi/hue_cluster_aggregate.hpp>
 #include <xambi/color_mode_aggregate.hpp>
 #include <xambi/rgb_color.hpp>
 #include <xambi/color_filter.hpp>
@@ -37,11 +38,12 @@ int main(int argc, char *argv[])
 	xambi::x11_context xctx;
 	xambi::capture_x11_nvfbc capture{xctx};
 	xambi::screen_rect rect{0, 0, 2560, 1440};
-	xambi::random_screen_sampler sampler{capture, rect, rng, 0.1f};
-	xambi::color_mode_aggregate<4, 4, 4> aggregate;
+	xambi::random_screen_sampler sampler{capture, rect, rng, 0.01f};
+	xambi::hue_cluster_aggregate aggregate;
+	// xambi::color_mode_aggregate<4, 4, 4> aggregate;
 	// xambi::averaging_color_aggregate aggregate;
 	// xambi::passthrough_color_filter filter;
-	xambi::lowpass_color_filter filter{0.5f};
+	xambi::lowpass_color_filter filter{0.2f};
 
 	unix_socket_server serv("./funny_socket");
 	
@@ -64,6 +66,10 @@ int main(int argc, char *argv[])
 		float r = color.r / 255.f;
 		float g = color.g / 255.f;
 		float b = color.b / 255.f;
+
+		// float h, s, v;
+		// xambi::rgb_to_hsv(r, g, b, h, s, v);
+		// xambi::hsv_to_rgb(h, s, v, r, g, b);
 
 		std::ostringstream ss; 
 		ss << r << " " << g << " " << b << std::endl;
