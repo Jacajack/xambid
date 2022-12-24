@@ -45,7 +45,8 @@ int main(int argc, char *argv[])
 	// xambi::passthrough_color_filter filter;
 	xambi::lowpass_color_filter filter{0.2f};
 
-	unix_socket_server serv("./funny_socket");
+	tcp_server serv(17777);
+	// unix_socket_server serv("./funny_socket");
 	
 	auto last_t = std::chrono::high_resolution_clock::now();
 	while (alive)

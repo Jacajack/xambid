@@ -9,15 +9,16 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <netinet/in.h>
 
-unix_socket_server_connection::unix_socket_server_connection(int socket, int client) :
+socket_server_connection::socket_server_connection(int socket, int client) :
 	m_socket(socket),
 	m_client(client),
 	m_broken(false)
 {
 }
 
-unix_socket_server_connection::unix_socket_server_connection(unix_socket_server_connection &&src) noexcept :
+socket_server_connection::socket_server_connection(socket_server_connection &&src) noexcept :
 	m_socket(src.m_socket),
 	m_client(std::exchange(src.m_client, 0)),
 	m_broken(src.m_broken),
@@ -25,7 +26,7 @@ unix_socket_server_connection::unix_socket_server_connection(unix_socket_server_
 {
 }
 
-unix_socket_server_connection &unix_socket_server_connection::operator=(unix_socket_server_connection &&rhs) noexcept
+socket_server_connection &socket_server_connection::operator=(socket_server_connection &&rhs) noexcept
 {
 	if (this == &rhs) return *this;
 	m_socket = rhs.m_socket;
@@ -35,7 +36,7 @@ unix_socket_server_connection &unix_socket_server_connection::operator=(unix_soc
 	return *this;
 }
 
-unix_socket_server_connection::~unix_socket_server_connection()
+socket_server_connection::~socket_server_connection()
 {
 	std::cerr << "closing conn " << m_client << std::endl;
 	if (!m_client) return;
@@ -45,7 +46,7 @@ unix_socket_server_connection::~unix_socket_server_connection()
 	assert(status != -1 && "close() failed on connection");
 }
 
-bool unix_socket_server_connection::send(const char *data, size_t length)
+bool socket_server_connection::send(const char *data, size_t length)
 {
 	if (is_broken())
 		return false;
@@ -100,10 +101,10 @@ bool unix_socket_server_connection::send(const char *data, size_t length)
 	return true;
 }
 
-unix_socket_server::unix_socket_server(const std::filesystem::path &path, int max_conns) :
-	m_path(path)
+socket_server::socket_server(int socket_fd, int max_conns) :
+	m_socket_fd(socket_fd),
+	m_max_conns(max_conns)
 {
-	m_socket_fd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0);
 	assert(m_socket_fd != -1);
 
 	int status;
@@ -116,33 +117,45 @@ unix_socket_server::unix_socket_server(const std::filesystem::path &path, int ma
 		sizeof(int)
 	);
 	assert(status == 0 && "setsockopt() failed");
+}
 
+socket_server::~socket_server()
+{
+	int status;
+	status = close(m_socket_fd);
+	assert(status != -1 && "close() failed on socket");
+}
+
+void socket_server::listen()
+{
+	int status = ::listen(m_socket_fd, m_max_conns);
+	assert(status == 0 && "listen() failed");
+}
+
+unix_socket_server::unix_socket_server(const std::filesystem::path &path, int max_conns) :
+	socket_server(::socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0), max_conns)
+{
 	struct sockaddr_un unconf{};
 	unconf.sun_family = AF_UNIX;
 	std::strncpy(unconf.sun_path, path.u8string().c_str(), sizeof(unconf.sun_path));
 
-	status = bind(
+	int status = bind(
 		m_socket_fd,
 		reinterpret_cast<struct sockaddr*>(&unconf),
 		sizeof(unconf)
 	);
 	assert(status == 0 && "bind() failed");
 
-	status = listen(m_socket_fd, max_conns);
-	assert(status == 0 && "listen() failed");
+	socket_server::listen();
 }
 
 unix_socket_server::~unix_socket_server()
 {
-	int status;
-	status = close(m_socket_fd);
-	assert(status != -1 && "close() failed on socket");
-
-	status = unlink(m_path.u8string().c_str());
+	int status = unlink(m_path.u8string().c_str());
 	assert(status != -1 && "unlink() failed on socket");
 }
 
-void unix_socket_server::update_connections()
+void socket_server::update_connections()
 {
 	accept_connection();
 
@@ -150,7 +163,7 @@ void unix_socket_server::update_connections()
 		std::remove_if(
 			m_connections.begin(),
 			m_connections.end(),
-			[](const unix_socket_server_connection &conn) {
+			[](const socket_server_connection &conn) {
 				return conn.is_broken();
 			}
 		),
@@ -158,7 +171,7 @@ void unix_socket_server::update_connections()
 	);
 }
 
-void unix_socket_server::broadcast(const char *data, size_t length)
+void socket_server::broadcast(const char *data, size_t length)
 {
 	// Note: send is only called if the buffer is empty
 	for (auto &conn : m_connections)
@@ -166,7 +179,7 @@ void unix_socket_server::broadcast(const char *data, size_t length)
 			conn.send(data, length);
 }
 
-void unix_socket_server::accept_connection()
+void socket_server::accept_connection()
 {
 	struct sockaddr_un unconf{};
 	socklen_t unconf_size = sizeof(unconf);
@@ -185,4 +198,24 @@ void unix_socket_server::accept_connection()
 
 	m_connections.emplace_back(m_socket_fd, client);
 	std::cerr << "new connection" << std::endl;
+}
+
+tcp_server::tcp_server(int port, int max_conns) :
+	socket_server(socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0), max_conns),
+	m_port(port)
+{
+	struct sockaddr_in inconf{};
+	inconf.sin_port = htons(m_port);
+	inconf.sin_addr.s_addr = INADDR_ANY;
+	inconf.sin_family = AF_INET;
+
+	int status = bind(
+		m_socket_fd,
+		reinterpret_cast<struct sockaddr*>(&inconf),
+		sizeof(inconf)
+	);
+
+	assert(status != -1 && "TCP bind() failed!");
+
+	socket_server::listen();
 }
