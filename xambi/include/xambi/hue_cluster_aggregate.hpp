@@ -22,6 +22,9 @@ public:
 		for (auto &bin : m_bins)
 			bin = {};
 
+		// To prevent div by 0 later
+		m_bins[0].count = 1;
+
 		for (std::size_t i = 0; i < size; i++)
 		{
 			const rgb_color color = data[i];
@@ -52,8 +55,6 @@ public:
 		const float h = best_bin_index / static_cast<float>(m_bins.size());
 		const float s = best_bin.s_sum / best_bin.count;
 		const float v = best_bin.v_sum / best_bin.count;
-		// float v = 1.f;
-		// float s = 1.f;
 
 		float r, g, b;
 		xambi::hsv_to_rgb(h, s, v, r, g, b);
@@ -63,6 +64,23 @@ public:
 		color.g = g * 255.f;
 		color.b = b * 255.f;
 		return color;
+	}
+
+	float get_confidence() const override
+	{
+		int max_bin_count = 0;
+		float total_count = 0;
+
+		for (auto &bin : m_bins)
+			max_bin_count = std::max(max_bin_count, bin.count);
+
+		for (auto &bin : m_bins)
+		{
+			float ratio = bin.count / static_cast<float>(max_bin_count);
+			total_count += bin.count * std::pow(ratio, 2.f);
+		}
+
+		return max_bin_count / total_count;
 	}
 
 private:
