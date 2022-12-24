@@ -62,22 +62,28 @@ int main(int argc, char *argv[])
 
 		auto pixels = sampler.sample();
 		auto icolor = aggregate.process(pixels.data(), pixels.size());
-		auto color = filter.feed(icolor, dt);
+
+		const float K = 3;
+		const float U = 0.2;
+		const float filter_confidence = std::pow(aggregate.get_confidence(), K) * (1.f - U) + U;
+
+		auto color = filter.feed(icolor, dt * filter_confidence);
 
 		float r = color.r / 255.f;
 		float g = color.g / 255.f;
 		float b = color.b / 255.f;
 
-		// float h, s, v;
-		// xambi::rgb_to_hsv(r, g, b, h, s, v);
-		// xambi::hsv_to_rgb(h, s, v, r, g, b);
+		float h, s, v;
+		xambi::rgb_to_hsv(r, g, b, h, s, v);
+		v = std::max(v, 0.2f);
+		xambi::hsv_to_rgb(h, s, v, r, g, b);
 
 		std::ostringstream ss; 
 		ss << r << " " << g << " " << b << std::endl;
 
 		serv.broadcast(ss.str().c_str(), ss.str().length());
 
-		std::cout << ss.str();
+		std::cout << ss.str() << " filter conf: " << filter_confidence << std::endl;
 		
 		// std::this_thread::sleep_for(10ms);
 		last_t = t;
