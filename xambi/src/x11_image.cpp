@@ -12,17 +12,17 @@ x11_image::x11_image(x11_context &xctx, XImage *img) :
 {
 }
 
-x11_image::x11_image(x11_image &&src) noexcept :
-	m_img(std::exchange(src.m_img, nullptr)),
-	m_xctx(src.m_xctx)
+x11_image::x11_image(x11_image &&src) noexcept
 {
+	std::swap(m_img, src.m_img);
+	std::swap(m_xctx, src.m_xctx);
 }
 
 x11_image &x11_image::operator=(x11_image &&rhs) noexcept
 {
 	if (this == &rhs) return *this;
-	m_img = std::exchange(rhs.m_img, nullptr);
-	m_xctx = rhs.m_xctx;
+	std::swap(m_img, rhs.m_img);
+	std::swap(m_xctx, rhs.m_xctx);
 	return *this;
 }
 
